@@ -1,7 +1,9 @@
 package com.xun.eyepetizer.adapter;
 
 import android.content.Context;
+import android.content.Intent;
 import android.graphics.Typeface;
+import android.os.Parcelable;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -11,8 +13,13 @@ import android.widget.TextView;
 
 import com.xun.eyepetizer.R;
 import com.xun.eyepetizer.mvp.model.bean.HomeBean;
+import com.xun.eyepetizer.mvp.model.bean.VideoBean;
+import com.xun.eyepetizer.ui.VideoDetailActivity;
 import com.xun.eyepetizer.utils.ImageLoadUtils;
+import com.xun.eyepetizer.utils.ObjectSaveUtils;
+import com.xun.eyepetizer.utils.SPUtils;
 
+import java.io.Serializable;
 import java.util.List;
 
 import butterknife.BindView;
@@ -40,11 +47,11 @@ public class HomeAdatper extends RecyclerView.Adapter<HomeAdatper.HomeViewHolder
 
     @Override
     public void onBindViewHolder(HomeViewHolder holder, int position) {
-        HomeBean.IssueListBean.ItemListBean bean = list.get(position);
-        String title = bean.getData().getTitle();
-        String category = bean.getData().getCategory();
+        final HomeBean.IssueListBean.ItemListBean bean = list.get(position);
+        final String title = bean.getData().getTitle();
+        final String category = bean.getData().getCategory();
         int minute = bean.getData().getDuration() / 60;
-        int second = bean.getData().getDuration() - (minute * 60);
+        final int second = bean.getData().getDuration() - (minute * 60);
         String realMinute;
         String realSecond;
         if (minute < 10) {
@@ -57,10 +64,10 @@ public class HomeAdatper extends RecyclerView.Adapter<HomeAdatper.HomeViewHolder
         } else {
             realSecond = String.valueOf(second);
         }
-        String playUrl = bean.getData().getPlayUrl();
-        String photo = bean.getData().getCover().getFeed();
+//        String playUrl = bean.getData().getPlayUrl();
+        final String photo = bean.getData().getCover().getFeed();
         HomeBean.IssueListBean.ItemListBean.DataBean.AuthorBean author = bean.getData().getAuthor();
-        ImageLoadUtils.display(context , holder.ivPhoto, photo);
+        ImageLoadUtils.display(context, holder.ivPhoto, photo);
         holder.tvTitle.setText(title);
         holder.tvDetail.setText("发布于 " + category + " / " + realMinute + ":" + realSecond);
         if (author != null) {
@@ -68,35 +75,36 @@ public class HomeAdatper extends RecyclerView.Adapter<HomeAdatper.HomeViewHolder
         } else {
             holder.ivUser.setVisibility(View.GONE);
         }
-//        holder ?.itemView ?.setOnClickListener {
-//            //跳转视频详情页
-//            var intent :Intent = Intent(context, VideoDetailActivity:: class.java)
-//            var desc = bean ?.data ?.description
-//            var duration = bean ?.data ?.duration
-//            var playUrl = bean ?.data ?.playUrl
-//            var blurred = bean ?.data ?.cover ?.blurred
-//            var collect = bean ?.data ?.consumption ?.collectionCount
-//            var share = bean ?.data ?.consumption ?.shareCount
-//            var reply = bean ?.data ?.consumption ?.replyCount
-//            var time = System.currentTimeMillis()
-//            var videoBean = VideoBean(photo, title, desc, duration, playUrl, category, blurred, collect, share, reply, time)
-//            var url = SPUtils.getInstance(context !!, "beans").getString(playUrl !!)
-//            if (url.equals("")) {
-//                var count = SPUtils.getInstance(context !!, "beans").getInt("count")
-//                if (count != -1) {
-//                    count = count.inc()
-//                } else {
-//                    count = 1
-//                }
-//                SPUtils.getInstance(context !!, "beans").put("count", count)
-//                SPUtils.getInstance(context !!, "beans").put(playUrl !!, playUrl)
-//                ObjectSaveUtils.saveObject(context !!, "bean$count", videoBean)
-//            }
-//            intent.putExtra("data", videoBean as Parcelable)
-//            context ?.let {
-//                context -> context.startActivity(intent)
-//            }
-//        }
+
+        holder.itemView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(context, VideoDetailActivity.class);
+                String desc = bean.getData().getDescription();
+                int duration = bean.getData().getDuration();
+                String playUrl = bean.getData().getPlayUrl();
+                String blurred = bean.getData().getCover().getBlurred();
+                int collect = bean.getData().getConsumption().getCollectionCount();
+                int share = bean.getData().getConsumption().getShareCount();
+                int reply = bean.getData().getConsumption().getReplyCount();
+                long time = System.currentTimeMillis();
+                VideoBean videoBean = new VideoBean(photo, title, desc, duration, playUrl, category, blurred, collect, share, reply, time);
+                String url = SPUtils.getInstance(context, "beans").getString(playUrl);
+                if ("".equals(url)) {
+                    int count = SPUtils.getInstance(context, "beans").getInt("count");
+                    if (count != -1) {
+                        count++;
+                    } else {
+                        count = 1;
+                    }
+                    SPUtils.getInstance(context, "beans").put("count", count);
+                    SPUtils.getInstance(context, "beans").put(playUrl, playUrl);
+                    ObjectSaveUtils.saveObject(context, "bean" + count, videoBean);
+                }
+                intent.putExtra("data", (Parcelable) videoBean);
+                context.startActivity(intent);
+            }
+        });
     }
 
     @Override
