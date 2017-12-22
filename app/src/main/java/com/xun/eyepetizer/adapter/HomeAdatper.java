@@ -125,12 +125,9 @@ public class HomeAdatper extends RecyclerView.Adapter<HomeAdatper.HomeViewHolder
         @BindView(R.id.tv_detail)
         TextView tvDetail;
 
-        Context context;
-
         public HomeViewHolder(Context context, View itemView) {
             super(itemView);
             ButterKnife.bind(this, itemView);
-            this.context = context;
             tvTitle.setTypeface(Typeface.createFromAsset(context.getAssets(), "fonts/FZLanTingHeiS-DB1-GB-Regular.TTF"));
         }
     }

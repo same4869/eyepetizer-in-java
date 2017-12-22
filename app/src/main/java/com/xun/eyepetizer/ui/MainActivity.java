@@ -18,6 +18,7 @@ import android.widget.Toast;
 
 import com.gyf.barlibrary.ImmersionBar;
 import com.xun.eyepetizer.R;
+import com.xun.eyepetizer.ui.fragment.FindFragment;
 import com.xun.eyepetizer.ui.fragment.HomeFragment;
 import com.xun.eyepetizer.utils.AppUtil;
 
@@ -50,6 +51,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     RadioGroup rgRoot;
 
     private HomeFragment homeFragment;
+    private FindFragment findFragment;
 
     private long mExitTime = 0;
     private Toast toast;
@@ -86,14 +88,15 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 //            }
         } else {
             homeFragment = new HomeFragment();
-//            findFragment = FindFragment()
+            findFragment = new FindFragment();
 //            mineFragment = MineFragment()
 //            hotFragemnt = HotFragment()
             FragmentTransaction fragmentTrans = getSupportFragmentManager().beginTransaction();
             fragmentTrans.add(R.id.fl_content, homeFragment);
-//            fragmentTrans.add(R.id.fl_content, findFragment)
+            fragmentTrans.add(R.id.fl_content, findFragment);
 //            fragmentTrans.add(R.id.fl_content, mineFragment)
 //            fragmentTrans.add(R.id.fl_content, hotFragemnt)
+            fragmentTrans.hide(findFragment);
             fragmentTrans.commit();
         }
 //        getSupportFragmentManager().beginTransaction().show(homeFragment)
@@ -137,6 +140,12 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         clearState();
         rbHome.setChecked(true);
         rbHome.setTextColor(Color.BLACK);
+        getSupportFragmentManager().beginTransaction().show(homeFragment)
+                .hide(findFragment)
+                .commit();
+        tvBarTitle.setText(getToday());
+        tvBarTitle.setVisibility(View.VISIBLE);
+        ivSearch.setImageResource(R.drawable.icon_search);
     }
 
     @OnClick(R.id.rb_find)
@@ -144,6 +153,12 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         clearState();
         rbFind.setChecked(true);
         rbFind.setTextColor(Color.BLACK);
+        getSupportFragmentManager().beginTransaction().show(findFragment)
+                .hide(homeFragment)
+                .commit();
+        tvBarTitle.setText("Discover");
+        tvBarTitle.setVisibility(View.VISIBLE);
+        ivSearch.setImageResource(R.drawable.icon_search);
     }
 
     @OnClick(R.id.rb_hot)

@@ -19,7 +19,6 @@ import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.FutureTarget;
 import com.shuyu.gsyvideoplayer.GSYVideoPlayer;
 import com.shuyu.gsyvideoplayer.listener.LockClickListener;
-import com.shuyu.gsyvideoplayer.listener.StandardVideoAllCallBack;
 import com.shuyu.gsyvideoplayer.utils.OrientationUtils;
 import com.shuyu.gsyvideoplayer.video.StandardGSYVideoPlayer;
 import com.xun.eyepetizer.R;
@@ -217,20 +216,22 @@ public class VideoDetailActivity extends AppCompatActivity {
     }
 
     private void addMission(final String playUrl, int count) {
-        RxDownload.getInstance(this).serviceDownload(playUrl, "download" + count).subscribe(new Consumer<Object>() {
-            @Override
-            public void accept(Object o) throws Exception {
-                AppUtil.showToast("开始下载");
-                SPUtils.getInstance(getApplicationContext(), "downloads").put(bean.getPlayUrl(), bean.getPlayUrl());
-                SPUtils.getInstance(getApplicationContext(), "download_state").put(playUrl, true);
-            }
+        RxDownload.getInstance(this).serviceDownload(playUrl, "download" + count).subscribe(
+                new Consumer<Object>() {
+                    @Override
+                    public void accept(Object o) throws Exception {
+                        AppUtil.showToast("开始下载");
+                        SPUtils.getInstance(getApplicationContext(), "downloads").put(bean.getPlayUrl(), bean.getPlayUrl());
+                        SPUtils.getInstance(getApplicationContext(), "download_state").put(playUrl, true);
+                    }
 
-        }, new Consumer<Throwable>() {
-            @Override
-            public void accept(Throwable throwable) throws Exception {
-                AppUtil.showToast("添加任务失败");
-            }
-        });
+                }, new Consumer<Throwable>() {
+                    @Override
+                    public void accept(Throwable throwable) throws Exception {
+                        AppUtil.showToast("添加任务失败");
+                    }
+                }
+        );
     }
 
 
