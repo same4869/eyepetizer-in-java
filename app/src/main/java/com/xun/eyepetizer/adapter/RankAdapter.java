@@ -48,8 +48,12 @@ public class RankAdapter extends RecyclerView.Adapter<RankAdapter.RankViewHolder
 
     @Override
     public void onBindViewHolder(RankViewHolder holder, final int position) {
-        final String photoUrl = list.get(position).getCover().getFeed();
-        ImageLoadUtils.display(context, holder.ivPhoto, photoUrl);
+        String photoUrlTemp = null;
+        if (list.get(position).getCover() != null) {
+            photoUrlTemp = list.get(position).getCover().getFeed();
+            ImageLoadUtils.display(context, holder.ivPhoto, photoUrlTemp);
+        }
+        final String photoUrl = photoUrlTemp;
         final String title = list.get(position).getTitle();
         holder.tvTitle.setText(title);
         final String category = list.get(position).getCategory();
@@ -58,14 +62,14 @@ public class RankAdapter extends RecyclerView.Adapter<RankAdapter.RankViewHolder
         int second = duration - (minute * 60);
         String realMinute;
         String realSecond;
-        if (minute < 10){
+        if (minute < 10) {
             realMinute = "0" + minute;
-        }else{
+        } else {
             realMinute = String.valueOf(minute);
         }
-        if (second < 10){
+        if (second < 10) {
             realSecond = "0" + second;
-        }else{
+        } else {
             realSecond = String.valueOf(second);
         }
         holder.tvTime.setText(category + " / " + realMinute + "'" + realSecond + "''");
@@ -73,13 +77,13 @@ public class RankAdapter extends RecyclerView.Adapter<RankAdapter.RankViewHolder
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(context, VideoDetailActivity.class);
-                String desc = list .get(position).getDescription();
-                int duration = list .get(position).getDuration();
-                String playUrl = list .get(position).getPlayUrl();
-                String blurred = list .get(position).getCover().getBlurred();
-                int collect = list .get(position).getConsumption().getCollectionCount();
-                int share = list .get(position).getConsumption().getShareCount();
-                int reply = list .get(position).getConsumption().getReplyCount();
+                String desc = list.get(position).getDescription();
+                int duration = list.get(position).getDuration();
+                String playUrl = list.get(position).getPlayUrl();
+                String blurred = list.get(position).getCover().getBlurred();
+                int collect = list.get(position).getConsumption().getCollectionCount();
+                int share = list.get(position).getConsumption().getShareCount();
+                int reply = list.get(position).getConsumption().getReplyCount();
                 long time = System.currentTimeMillis();
                 VideoBean videoBean = new VideoBean(photoUrl, title, desc, duration, playUrl, category, blurred, collect, share, reply, time);
                 String url = SPUtils.getInstance(context, "beans").getString(playUrl);

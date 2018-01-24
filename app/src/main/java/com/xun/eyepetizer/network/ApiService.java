@@ -38,4 +38,9 @@ public interface ApiService {
     @GET("v3/videos")
     Observable<HotBean> getFindDetailMoreData(@Query("start") int start, @Query("num") int num,
                                               @Query("categoryName") String categoryName, @Query("strategy") String strategy);
+
+    //获取热门排行信息
+    @GET("v3/ranklist")
+    Observable<HotBean> getHotData(@Query("num") int num, @Query("strategy") String strategy,
+                                   @Query("udid") String udid, @Query("vc") int vc);
 }

@@ -8,6 +8,7 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import butterknife.ButterKnife;
+import butterknife.Unbinder;
 
 /**
  * Created by xunwang on 2017/12/20.
@@ -17,6 +18,7 @@ public abstract class BaseFragment extends Fragment {
     private View rootView;
     private boolean isFirst;
     private boolean isFragmentVisiable;
+    private Unbinder unbinder;
 
     @Nullable
     @Override
@@ -30,7 +32,7 @@ public abstract class BaseFragment extends Fragment {
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        ButterKnife.bind(this, rootView);
+        unbinder = ButterKnife.bind(this, rootView);
         initView();
     }
 
@@ -53,6 +55,12 @@ public abstract class BaseFragment extends Fragment {
             onFragmentVisiableChange(false);
             isFragmentVisiable = false;
         }
+    }
+
+    @Override
+    public void onDestroyView() {
+        super.onDestroyView();
+        unbinder.unbind();
     }
 
     protected abstract void initView();

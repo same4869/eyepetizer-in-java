@@ -20,6 +20,8 @@ import com.gyf.barlibrary.ImmersionBar;
 import com.xun.eyepetizer.R;
 import com.xun.eyepetizer.ui.fragment.FindFragment;
 import com.xun.eyepetizer.ui.fragment.HomeFragment;
+import com.xun.eyepetizer.ui.fragment.HotFragment;
+import com.xun.eyepetizer.ui.fragment.MineFragment;
 import com.xun.eyepetizer.utils.AppUtil;
 
 import java.util.Calendar;
@@ -52,6 +54,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
     private HomeFragment homeFragment;
     private FindFragment findFragment;
+    private HotFragment hotFragemnt;
+    private MineFragment mineFragment;
 
     private long mExitTime = 0;
     private Toast toast;
@@ -89,14 +93,16 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         } else {
             homeFragment = new HomeFragment();
             findFragment = new FindFragment();
-//            mineFragment = MineFragment()
-//            hotFragemnt = HotFragment()
+            mineFragment = new MineFragment();
+            hotFragemnt = new HotFragment();
             FragmentTransaction fragmentTrans = getSupportFragmentManager().beginTransaction();
             fragmentTrans.add(R.id.fl_content, homeFragment);
             fragmentTrans.add(R.id.fl_content, findFragment);
-//            fragmentTrans.add(R.id.fl_content, mineFragment)
-//            fragmentTrans.add(R.id.fl_content, hotFragemnt)
+            fragmentTrans.add(R.id.fl_content, mineFragment);
+            fragmentTrans.add(R.id.fl_content, hotFragemnt);
             fragmentTrans.hide(findFragment);
+            fragmentTrans.hide(hotFragemnt);
+            fragmentTrans.hide(mineFragment);
             fragmentTrans.commit();
         }
 //        getSupportFragmentManager().beginTransaction().show(homeFragment)
@@ -142,6 +148,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         rbHome.setTextColor(Color.BLACK);
         getSupportFragmentManager().beginTransaction().show(homeFragment)
                 .hide(findFragment)
+                .hide(hotFragemnt)
+                .hide(mineFragment)
                 .commit();
         tvBarTitle.setText(getToday());
         tvBarTitle.setVisibility(View.VISIBLE);
@@ -155,6 +163,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         rbFind.setTextColor(Color.BLACK);
         getSupportFragmentManager().beginTransaction().show(findFragment)
                 .hide(homeFragment)
+                .hide(hotFragemnt)
+                .hide(mineFragment)
                 .commit();
         tvBarTitle.setText("Discover");
         tvBarTitle.setVisibility(View.VISIBLE);
@@ -166,6 +176,14 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         clearState();
         rbHot.setChecked(true);
         rbHot.setTextColor(Color.BLACK);
+        getSupportFragmentManager().beginTransaction().show(hotFragemnt)
+                .hide(homeFragment)
+                .hide(findFragment)
+                .hide(mineFragment)
+                .commit();
+        tvBarTitle.setText("Ranking");
+        tvBarTitle.setVisibility(View.VISIBLE);
+        ivSearch.setImageResource(R.drawable.icon_search);
     }
 
     @OnClick(R.id.rb_mine)
@@ -173,6 +191,13 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         clearState();
         rbMine.setChecked(true);
         rbMine.setTextColor(Color.BLACK);
+        getSupportFragmentManager().beginTransaction().show(mineFragment)
+                .hide(homeFragment)
+                .hide(findFragment)
+                .hide(hotFragemnt)
+                .commit();
+        tvBarTitle.setVisibility(View.INVISIBLE);
+        ivSearch.setImageResource(R.drawable.icon_setting);
     }
 
     @Override
